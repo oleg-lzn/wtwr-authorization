@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import ProtectedRoute from "../components/ProtectedRoute";
 import * as auth from "../utils/auth";
 import * as api from "../utils/api";
@@ -15,6 +21,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({ username: "", email: "" });
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const jwt = getToken();
@@ -25,7 +32,6 @@ function App() {
       .then(({ username, email }) => {
         setIsLoggedIn(true);
         setUserData({ username, email });
-        navigate("/ducks");
       })
       .catch((e) => console.error(e));
   }, []);
@@ -55,7 +61,8 @@ function App() {
         setToken(data.jwt);
         setUserData(data.user);
         setIsLoggedIn(true);
-        navigate("/ducks");
+        const redirectPath = location.state?.from?.pathname || "/ducks";
+        navigate(redirectPath);
       }
     } catch (e) {
       console.error(e);
@@ -97,7 +104,9 @@ function App() {
         path="/login"
         element={
           <div className="loginContainer">
-            <Login handleLogin={handleLogin} />
+            <ProtectedRoute isLoggedIn={isLoggedIn} anonymous>
+              <Login handleLogin={handleLogin} />
+            </ProtectedRoute>
           </div>
         }
       />
@@ -105,7 +114,9 @@ function App() {
         path="/register"
         element={
           <div className="registerContainer">
-            <Register handleRegistration={handleRegistration} />
+            <ProtectedRoute isLoggedIn={isLoggedIn} anonymous>
+              <Register handleRegistration={handleRegistration} />
+            </ProtectedRoute>
           </div>
         }
       />
