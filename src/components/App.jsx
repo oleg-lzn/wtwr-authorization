@@ -97,7 +97,7 @@ function App() {
       <Route
         path="/ducks"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ProtectedRoute>
             <Ducks />
           </ProtectedRoute>
         }
@@ -106,7 +106,7 @@ function App() {
       <Route
         path="/my-profile"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ProtectedRoute>
             <MyProfile userData={userData} />
           </ProtectedRoute>
         }
@@ -115,7 +115,7 @@ function App() {
         path="/login"
         element={
           <div className="loginContainer">
-            <ProtectedRoute isLoggedIn={isLoggedIn} anonymous>
+            <ProtectedRoute anonymous>
               <Login handleLogin={handleLogin} />
             </ProtectedRoute>
           </div>
@@ -125,7 +125,7 @@ function App() {
         path="/register"
         element={
           <div className="registerContainer">
-            <ProtectedRoute isLoggedIn={isLoggedIn} anonymous>
+            <ProtectedRoute anonymous>
               <Register handleRegistration={handleRegistration} />
             </ProtectedRoute>
           </div>
