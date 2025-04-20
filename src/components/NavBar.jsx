@@ -1,8 +1,19 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import "./styles/NavBar.css";
+import { removeToken } from "../utils/token";
+import { useLoggedIn } from "./LoggedInWrapper";
 
 function NavBar() {
+  const { setIsLoggedIn } = useLoggedIn();
+  const navigate = useNavigate();
+
+  const signOut = () => {
+    removeToken();
+    setIsLoggedIn(false);
+    navigate("/login");
+  };
+
   return (
     <div className="navbar">
       <div className="navbar__logo">
@@ -20,7 +31,9 @@ function NavBar() {
           </NavLink>
         </li>
         <li>
-          <button className="navbar__link navbar__button">Sign Out</button>
+          <button className="navbar__link navbar__button" onClick={signOut}>
+            Sign Out
+          </button>
         </li>
       </ul>
     </div>

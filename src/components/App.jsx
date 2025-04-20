@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Routes,
   Route,
@@ -16,16 +16,22 @@ import Login from "./Login";
 import MyProfile from "./MyProfile";
 import Register from "./Register";
 import "./styles/App.css";
+import { useLoggedIn } from "./LoggedInWrapper";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, setIsLoggedIn } = useLoggedIn();
   const [userData, setUserData] = useState({ username: "", email: "" });
+  const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const jwt = getToken();
-    if (!jwt) return;
+    if (!jwt) {
+      setIsLoading(false);
+      return;
+    }
 
     api
       .getUserInfo(jwt)
@@ -33,7 +39,8 @@ function App() {
         setIsLoggedIn(true);
         setUserData({ username, email });
       })
-      .catch((e) => console.error(e));
+      .catch((e) => console.error(e))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const handleRegistration = async ({
@@ -69,6 +76,10 @@ function App() {
       throw e;
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Routes>
